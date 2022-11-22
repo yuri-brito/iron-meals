@@ -28,7 +28,7 @@ function NavBar(props) {
                 </Offcanvas.Header>
                 <Offcanvas.Body>
                 <Nav className="justify-content-end flex-grow-1 pe-3">
-                    <Link to={'/refeicoes'} style={{textDecoration:'none',color:'grey',marginTop:10}}>
+                    <Link to={'/'} style={{textDecoration:'none',color:'grey',marginTop:10}}>
                         <div className='onHover'>
                             <i className="bi bi-house-door-fill"></i>  Home
                         </div>
@@ -38,7 +38,7 @@ function NavBar(props) {
                         <i className="bi bi-cup-straw"></i>  Refeições    
                     </div>
                     </Link>
-                    <Link to={'/refeicoes'} style={{textDecoration:'none',color:'grey',marginTop:10}}>
+                    <Link to={'/'} style={{textDecoration:'none',color:'grey',marginTop:10}}>
                     <div className='onHover'>
                         <i className="bi bi-box-arrow-right"></i>   Logout
                     </div>

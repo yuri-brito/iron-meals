@@ -18,9 +18,10 @@ function App() {
       try {
         
         const response= await axios.get(apiURLuser)
-        const tempo = (ms)=>{return new Promise(resolve =>setTimeout(resolve,ms))}
-        await tempo(3000)
-        setRefeicoes(response.data)
+        // const tempo = (ms)=>{return new Promise(resolve =>setTimeout(resolve,ms))}
+        // await tempo(3000)
+        const reserved=response.data.reverse()
+        setRefeicoes(reserved)
         setIsLoading(false)
       } catch (error) {
         console.log(error) 
