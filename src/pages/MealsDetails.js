@@ -25,13 +25,13 @@ const MealsDetails = props => {
       }  
       useEffect(()=>{
         fetchingRefeicao();
-      },[id])
+      },[id,props.reload])
     return (
         <div>
             <Container>
             <NavBar/>
             {isLoading?<SpinnerImage />:
-                <CardDetail refeicao={refeicao} apiURLuser={props.apiURLuser} /> 
+                <CardDetail refeicao={refeicao} apiURLuser={props.apiURLuser} setReload={props.setReload} reload={props.reload}/> 
             }
             </Container>
             

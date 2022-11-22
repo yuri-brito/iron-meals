@@ -1,40 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios"
 import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap"
 import Select from 'react-select';
+import { useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 import itens from "../../foods-db.json"
 
 
-const ModalAdd = (props, apiURLuser) => {
+const MealEdit = ({id, apiURLuser,setReload,reload}) => {
 
-    const [food, setFood] = useState([
-        {itemId: ""}
-    ]);
-
-    const [quant, setQuant] = useState([
-        {quantity: ""}
-    ]);
+    const mealId = id   
 
     //testado    
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     
-
-    //API não está configurada ainda
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        
-        try {            
-            //await axios.post(apiURLuser, form)            
-            setShow(false)
-            
-        } catch (error) {            
-            console.log(error)            
-        }
-    };
-    
-    const [meal, setMeal] = useState({
+    //avaliar subir o "Form" para o App
+    const [meal, setMeal] = useState({        
         title: "",        
         itens: [
             {
@@ -50,21 +33,46 @@ const ModalAdd = (props, apiURLuser) => {
             }
         ]
     })
-    
-    // const [item, setItem] = useState({
-    //     id: "", 
-    //     label: "", 
-    //     kcal: "", 
-    //     protein: "", 
-    //     lipids: "", 
-    //     carbs: "", 
-    //     fiber: "", 
-    //     sodium: "",
-    //     quantity: ""
-    // })
 
-    
+    //para puxar as refeições do banco de dados    
+    async function fetchingMeal(){
+        try {
+          const response= await axios.get(`${apiURLuser}/${mealId}`)
+          // const tempo = (ms)=>{return new Promise(resolve =>setTimeout(resolve,ms))}
+          // await tempo(5000)
+          setMeal(response.data)
+           console.log(response.data, '<-response data')
+        } catch (error) {
+          console.log(error)
+          toast.error('Algo deu errado. Tente novamente!')   
+        }
+      }  
+      useEffect(()=>{
+        fetchingMeal();
+      },[mealId])
 
+
+    //API não está configurada ainda
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        
+        try {            
+            const clone = { ...meal }            
+            delete clone._id
+            console.log(clone,'<-clone')
+            await axios.put(`${apiURLuser}/${mealId}`, clone)
+            setShow(false)
+            setReload(!reload)
+                 
+            toast.success('Refeição alterada com sucesso!',{duration:4000})
+            
+            
+        } catch (error) {
+            console.log(error)
+            toast.error('Algo deu errado. Tente novamente mais tarde!',{duration:4000})
+        }
+    };
+        
     const handleAdd = () => {            
             const tempMeal = {
                 id: "", 
@@ -85,50 +93,42 @@ const ModalAdd = (props, apiURLuser) => {
         
         setMeal({...meal, itens: meal.itens})        
     }    
-    
 
     const handleChange = (e, index) => {
         
             if(e.target == undefined) {
                 const tempMeal = meal.itens
-                tempMeal[index].id = e.id
-                tempMeal[index].label = e.label
-                tempMeal[index].kcal = e.kcal
-                tempMeal[index].protein = e.protein
-                tempMeal[index].carbs = e.carbs
-                tempMeal[index].fiber = e.fiber
-                tempMeal[index].sodium = e.sodium
-                tempMeal[index].lipids = e.lipids
-
+                    tempMeal[index].id = e.id
+                    tempMeal[index].label = e.label
+                    tempMeal[index].kcal = e.kcal
+                    tempMeal[index].protein = e.protein
+                    tempMeal[index].carbs = e.carbs
+                    tempMeal[index].fiber = e.fiber
+                    tempMeal[index].sodium = e.sodium
+                    tempMeal[index].lipids = e.lipids
                 setMeal({...meal, itens: tempMeal})                
                 
             } else {
 
                 if(e.target.name === "title") {
-                    setMeal({...meal, [e.target.name]: e.target.value})
-
-                    
+                    setMeal({...meal, [e.target.name]: e.target.value})                    
                 } 
 
                 if (e.target.name === "quantity"){
                     const tempMeal = meal.itens
                     tempMeal[index].quantity = Number(e.target.value)
-                    setMeal({...meal, itens: tempMeal})
-                    
-                    
-                }                                
-            }             
+                    setMeal({...meal, itens: tempMeal})                    
+                }
+            }
         }
         
-        console.log(meal)
-
-    
+    console.log(meal)
 
 
     return (
         <div>
             <Button variant="primary" onClick={ handleShow }>
-                cadastrar refeição
+                Editar Refeição
             </Button>
 
             <Modal
@@ -139,19 +139,19 @@ const ModalAdd = (props, apiURLuser) => {
                 keyboard={false}
             >
                 <Modal.Header closeButton>
-                <Modal.Title>Cadastrar nova refeição</Modal.Title>
+                <Modal.Title>Editar refeição</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Container>
                         <Form onSubmit={ handleSubmit }>
                             <Row>
-                                <Col className="d-flex justify-content-center align-items-center">
-                                    <Form.Group className="mtb-3">
+                            <Col className="d-flex justify-content-start align-items-center">
+                                    <Form.Group className="mb-3">
                                         <Form.Label>Selecione a Refeição</Form.Label>
-                                        <Form.Select name="title" onChange={ handleChange }>
-                                            <option value="0">Selecione uma opção</option>
+                                        <Form.Select value={meal.title} name="title" onChange={ handleChange }>
+                                            
                                             <option value="breakfast">Café da Manhã</option>
-                                            <option value="lunch">Almoço</option>
+                                            <option value="lunch" >Almoço</option>
                                             <option value="snacks">Lanche</option>
                                             <option value="dinner">Jantar</option>                                                
                                         </Form.Select>
@@ -173,21 +173,8 @@ const ModalAdd = (props, apiURLuser) => {
                                             // isClearable={true}
                                             isSearchable={true}
                                             name="item"                                            
-                                            onChange={ (e) => handleChange(e, index) }
-                                            
-                                            // capturar o value
+                                            onChange={ (e) => handleChange(e, index) }                                            
                                         />
-
-                                        {/* <Form.Select name="itemId" 
-                                        onChange={(e) => handleChangeFood(e, index) }
-                                        >
-                                            <option value="0">Selecione um item...</option>
-                                            {itens.map((option, index) => (
-                                                <option key={index} value={option.id}>
-                                                    {option.label}
-                                                </option>
-                                            ))}
-                                        </Form.Select>                                         */}
                                     </Form.Group>
                                 </Col>
                                 <Col className="col-3">
@@ -203,14 +190,14 @@ const ModalAdd = (props, apiURLuser) => {
                                     />
                                 </Form.Group>
                                 </Col>
-                                <Col className="col-2">
+                                <Col className="col-2 d-flex justify-content-center align-items-end">
                                    {meal.itens.length > 1 && 
-                                    <Button 
-                                        className="mt-3" 
+                                    <Button  
                                         variant="danger"
                                         onClick={(e) => handleRemove(e, index)}>
-                                        Remover
-                                        </Button>} 
+                                        <i className="bi bi-trash3"></i>   Excluir
+                                        </Button>
+                                        } 
                                 </Col>
                             </Row>                                                     
                             </div>
@@ -221,16 +208,24 @@ const ModalAdd = (props, apiURLuser) => {
                                 className="m-3" 
                                 variant="light" 
                                 onClick={ handleAdd }
-                                >
-                                    Adicionar item
+                                ><i className="bi bi-clipboard2-plus"></i>   Adicionar item
                             </Button>
 
-                            <Button className="mt-4" variant="success" type="submit">Salvar refeição</Button>
                         </Form>
                     </Container>
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="secondary" onClick={ handleClose }>Sair sem salvar</Button>                
+                <Container>
+                        <Row>
+                            <Col className="col-md-6 text-center">
+                                <Button className="col-6 " variant="success" type="submit"onClick={handleSubmit}><i className="bi bi-download"></i>   Salvar refeição</Button>
+                            </Col>
+                            <Col className="col-md-6 text-center">
+                                <Button variant="secondary" onClick={ handleClose }><i className="bi bi-x-square"></i>   Cancelar</Button>                
+                            </Col>
+                        </Row>
+                    </Container>
+                                   
                 </Modal.Footer>
             </Modal>
 
@@ -239,4 +234,4 @@ const ModalAdd = (props, apiURLuser) => {
 };
 
 
-export default ModalAdd;
+export default MealEdit;
