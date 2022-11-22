@@ -47,7 +47,7 @@ const MealCard = props => {
                     return(
                     <OverlayTrigger
                         key={props.refeicao.itens.indexOf(item)}
-                        placement="auto-start"
+                        placement="top"
                         overlay={
                             <Tooltip id={`tooltip-top`}>
                                 {item.label}

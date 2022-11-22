@@ -55,6 +55,21 @@ const MealEdit = ({id, apiURLuser,setReload,reload}) => {
     //API não está configurada ainda
     const handleSubmit = async (e) => {
         e.preventDefault()
+        if(meal.title===''){
+            toast.error('Selecione uma opção de refeição!')
+            return
+        }
+        for (let item of meal.itens){
+            
+            if(item.id===''){
+                toast.error('Campo item vazio!')
+            return
+            }
+            if(item.quantity==='' || item.quantity===0){
+                toast.error('Campo Quantidade vazio!')
+            return
+            }
+        }
         
         try {            
             const clone = { ...meal }            
@@ -125,8 +140,7 @@ const MealEdit = ({id, apiURLuser,setReload,reload}) => {
 
     return (
         <div>
-            <Button variant="primary" onClick={ handleShow }>
-                Editar Refeição
+            <Button variant="primary" onClick={ handleShow }><i className="bi bi-pencil-square"></i>   Editar Refeição
             </Button>
 
             <Modal

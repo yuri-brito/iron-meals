@@ -35,6 +35,26 @@ const MealAdd = (props) => {
     //API não está configurada ainda
     const handleSubmit = async (e) => {
         e.preventDefault()
+        if(meal.title===''){
+            toast.error('Selecione uma opção de refeição!')
+            return
+        }
+        for (let item of meal.itens){
+            
+            if(item.id===''){
+                toast.error('Campo item vazio!')
+            return
+            }
+            if(item.quantity==='' || item.quantity===0){
+                toast.error('Campo Quantidade vazio!')
+            return
+            }
+        }
+        if(meal.itens.length===0){
+            toast.error('Selecione pelo menos um item!')
+            return
+
+        }
         try {            
             await axios.post(props.apiURLuser, meal)            
             setShow(false)
