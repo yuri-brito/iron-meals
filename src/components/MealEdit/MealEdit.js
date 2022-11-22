@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import itens from "../../foods-db.json"
 
 
-const MealEdit = (id, apiURLuser) => {
+const MealEdit = ({id, apiURLuser,setReload,reload}) => {
 
     const mealId = id   
 
@@ -41,7 +41,7 @@ const MealEdit = (id, apiURLuser) => {
           // const tempo = (ms)=>{return new Promise(resolve =>setTimeout(resolve,ms))}
           // await tempo(5000)
           setMeal(response.data)
-         
+
         } catch (error) {
           console.log(error)
           toast.error('Algo deu errado. Tente novamente!')   
@@ -58,12 +58,18 @@ const MealEdit = (id, apiURLuser) => {
         
         try {            
             const clone = { ...meal }            
-            delete meal._id
-            //await axios.put(`${apiURLuser}/${mealId}`, clone)
+
+            delete clone._id          
+            await axios.put(`${apiURLuser}/${mealId}`, clone)
             setShow(false)
+            setReload(!reload)
+                 
+            toast.success('Refeição alterada com sucesso!',{duration:4000})
+            
             
         } catch (error) {
             console.log(error)
+            toast.error('Algo deu errado. Tente novamente mais tarde!',{duration:4000})
         }
     };
         
@@ -116,8 +122,6 @@ const MealEdit = (id, apiURLuser) => {
             }
         }
         
-        console.log(meal)
-
 
     return (
         <div>
@@ -139,13 +143,14 @@ const MealEdit = (id, apiURLuser) => {
                     <Container>
                         <Form onSubmit={ handleSubmit }>
                             <Row>
-                                <Col className="d-flex justify-content-center align-items-center">
-                                    <Form.Group className="mtb-3">
+
+                              <Col className="d-flex justify-content-start align-items-center">
+                                    <Form.Group className="mb-3">
                                         <Form.Label>Selecione a Refeição</Form.Label>
-                                        <Form.Select name="title" onChange={ handleChange }>
-                                            <option value="0">Selecione uma opção</option>
+                                        <Form.Select value={meal.title} name="title" onChange={ handleChange }>
+                                            
                                             <option value="breakfast">Café da Manhã</option>
-                                            <option value="lunch">Almoço</option>
+                                            <option value="lunch" >Almoço</option>
                                             <option value="snacks">Lanche</option>
                                             <option value="dinner">Jantar</option>                                                
                                         </Form.Select>
@@ -184,34 +189,40 @@ const MealEdit = (id, apiURLuser) => {
                                     />
                                 </Form.Group>
                                 </Col>
-                                <Col className="col-2">
+
+                                <Col className="col-2 d-flex justify-content-center align-items-end">
                                    {meal.itens.length > 1 && 
-                                    <Button 
-                                        className="mt-3" 
+                                    <Button  
                                         variant="danger"
                                         onClick={(e) => handleRemove(e, index)}>
-                                        Remover
-                                        </Button>} 
-                                </Col>
+                                        <i className="bi bi-trash3"></i>   Excluir
+                                        </Button>
+                                        } 
+                                  </Col>
                             </Row>                                                     
                             </div>
-
                         )
                     })}
                             <Button 
                                 className="m-3" 
                                 variant="light" 
                                 onClick={ handleAdd }
-                                >
-                                    Adicionar item
+                                ><i className="bi bi-clipboard2-plus"></i>   Adicionar item
                             </Button>
-
-                            <Button className="mt-4" variant="success" type="submit">Salvar refeição</Button>
                         </Form>
                     </Container>
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="secondary" onClick={ handleClose }>Sair</Button>                
+                  <Container>
+                        <Row>
+                            <Col className="col-md-6 text-center">
+                                <Button className="col-6 " variant="success" type="submit"onClick={handleSubmit}><i className="bi bi-download"></i>   Salvar refeição</Button>
+                            </Col>
+                            <Col className="col-md-6 text-center">
+                                <Button variant="secondary" onClick={ handleClose }><i className="bi bi-x-square"></i>   Cancelar</Button>                
+                            </Col>
+                        </Row>
+                    </Container>  
                 </Modal.Footer>
             </Modal>
 

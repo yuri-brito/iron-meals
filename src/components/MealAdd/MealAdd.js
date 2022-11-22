@@ -3,37 +3,12 @@ import axios from "axios"
 import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap"
 import Select from 'react-select';
 import itens from "../../foods-db.json"
+import { useNavigate } from "react-router-dom";
+import toast from 'react-hot-toast'
 
+const MealAdd = (props) => {
+    const navigate=useNavigate()
 
-const ModalAdd = (props, apiURLuser) => {
-
-    const [food, setFood] = useState([
-        {itemId: ""}
-    ]);
-
-    const [quant, setQuant] = useState([
-        {quantity: ""}
-    ]);
-
-    //testado    
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-    
-
-    //API não está configurada ainda
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        
-        try {            
-            //await axios.post(apiURLuser, form)            
-            setShow(false)
-            
-        } catch (error) {            
-            console.log(error)            
-        }
-    };
-    
     const [meal, setMeal] = useState({
         title: "",        
         itens: [
@@ -50,20 +25,44 @@ const ModalAdd = (props, apiURLuser) => {
             }
         ]
     })
-    
-    // const [item, setItem] = useState({
-    //     id: "", 
-    //     label: "", 
-    //     kcal: "", 
-    //     protein: "", 
-    //     lipids: "", 
-    //     carbs: "", 
-    //     fiber: "", 
-    //     sodium: "",
-    //     quantity: ""
-    // })
 
+    //testado    
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
     
+
+    //API não está configurada ainda
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        try {            
+            await axios.post(props.apiURLuser, meal)            
+            setShow(false)
+            props.setReload(!props.reload)
+            setMeal({
+                title: "",        
+                itens: [
+                    {
+                        id: "", 
+                        label: "", 
+                        kcal: "", 
+                        protein: "", 
+                        lipids: "", 
+                        carbs: "", 
+                        fiber: "", 
+                        sodium: "",
+                        quantity: ""
+                    }]})
+                 
+            toast.success('Refeição incluída com sucesso!',{duration:4000})
+
+            navigate('/refeicoes')
+            
+        } catch (error) {            
+            console.log(error)
+            toast.error('Algo deu errado. Tente novamente mais tarde!',{duration:4000})            
+        }
+    };
 
     const handleAdd = () => {            
             const tempMeal = {
@@ -117,19 +116,12 @@ const ModalAdd = (props, apiURLuser) => {
                     
                     
                 }                                
-            }             
-        }
-        
-        console.log(meal)
-
+            }
+        }     
     
-
-
     return (
         <div>
-            <Button variant="primary" onClick={ handleShow }>
-                cadastrar refeição
-            </Button>
+            <Button variant="outline-primary" onClick={handleShow}><i className="bi bi-clipboard2-plus"></i>  Adicionar</Button>
 
             <Modal
                 show={show}
@@ -145,8 +137,10 @@ const ModalAdd = (props, apiURLuser) => {
                     <Container>
                         <Form onSubmit={ handleSubmit }>
                             <Row>
-                                <Col className="d-flex justify-content-center align-items-center">
-                                    <Form.Group className="mtb-3">
+
+                                <Col className="d-flex justify-content-start align-items-center">
+                                    <Form.Group className="ms-3 mb-3">
+
                                         <Form.Label>Selecione a Refeição</Form.Label>
                                         <Form.Select name="title" onChange={ handleChange }>
                                             <option value="0">Selecione uma opção</option>
@@ -161,76 +155,76 @@ const ModalAdd = (props, apiURLuser) => {
                     
                     {meal.itens.map((obj, index) => {                        
                         return (
-                            <div key={index}>
-                            <Row>
-                                <Col>
+
+                            <Row key={index}>
+                                <Col className="ms-3 mt-2">
                                     <Form.Group className="mtb-3">
                                     <Form.Label>Selecione um item</Form.Label>
                                         <Select
+                                            className="basic-single"
                                             value={obj}
                                             style={{textAlign: "left"}}
-                                            options={itens}                                                                                                                                    
-                                            // isClearable={true}
+                                            options={itens}                           
+                                            isClearable={true}
                                             isSearchable={true}
-                                            name="item"                                            
-                                            onChange={ (e) => handleChange(e, index) }
-                                            
+                                            placeholder="Selecione um item"
+                                            name="item"
+                                            onChange={ (e) => handleChange(e, index) }                                            
                                             // capturar o value
                                         />
 
-                                        {/* <Form.Select name="itemId" 
-                                        onChange={(e) => handleChangeFood(e, index) }
-                                        >
-                                            <option value="0">Selecione um item...</option>
-                                            {itens.map((option, index) => (
-                                                <option key={index} value={option.id}>
-                                                    {option.label}
-                                                </option>
-                                            ))}
-                                        </Form.Select>                                         */}
                                     </Form.Group>
                                 </Col>
-                                <Col className="col-3">
-                                <Form.Group className="mtb-3">
-                                    <Form.Label>Quantidade</Form.Label>
-                                    <Form.Control
-                                        type="number"
-                                        placeholder="em (g) gramas"
-                                        name="quantity"
-                                        // value={form.quantity}
-                                        onChange={(e) => handleChange(e, index) }
-                                        value={obj.quantity}
-                                    />
-                                </Form.Group>
+                                <Col className="col-3 ms-3 mt-2">
+                                  <Form.Group className="mtb-3">
+                                      <Form.Label>Quantidade</Form.Label>
+                                      <Form.Control
+                                          type="number"
+                                          placeholder="em (g) gramas"
+                                          name="quantity"
+                                          // value={form.quantity}
+                                          onChange={(e) => handleChange(e, index) }
+                                          value={obj.quantity}
+                                      />
+                                  </Form.Group>
                                 </Col>
-                                <Col className="col-2">
+
+                                <Col className="col-2 d-flex justify-content-center align-items-end">
                                    {meal.itens.length > 1 && 
                                     <Button 
-                                        className="mt-3" 
                                         variant="danger"
                                         onClick={(e) => handleRemove(e, index)}>
-                                        Remover
+                                        <i className="bi bi-trash3"></i>   Excluir
                                         </Button>} 
                                 </Col>
-                            </Row>                                                     
-                            </div>
+                            </Row>                                                    
 
                         )
                     })}
-                            <Button 
-                                className="m-3" 
-                                variant="light" 
-                                onClick={ handleAdd }
-                                >
-                                    Adicionar item
-                            </Button>
-
-                            <Button className="mt-4" variant="success" type="submit">Salvar refeição</Button>
+                            <Row>
+                                <Col>
+                                    <Button 
+                                        className="m-3" 
+                                        variant="light" 
+                                        onClick={ handleAdd }
+                                        ><i className="bi bi-clipboard2-plus"></i>   Adicionar item
+                                    </Button>
+                                </Col>
+                            </Row>
                         </Form>
                     </Container>
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="secondary" onClick={ handleClose }>Sair sem salvar</Button>                
+                    <Container>
+                        <Row>
+                            <Col className="col-md-6 text-center">
+                                <Button className="col-6 " variant="success" type="submit"onClick={handleSubmit}><i className="bi bi-download"></i>   Salvar refeição</Button>
+                            </Col>
+                            <Col className="col-md-6 text-center">
+                                <Button variant="secondary" onClick={ handleClose }><i className="bi bi-x-square"></i>   Cancelar</Button>                
+                            </Col>
+                        </Row>
+                    </Container>
                 </Modal.Footer>
             </Modal>
 
@@ -239,4 +233,5 @@ const ModalAdd = (props, apiURLuser) => {
 };
 
 
-export default ModalAdd;
+
+export default MealAdd;

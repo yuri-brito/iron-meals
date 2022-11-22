@@ -1,5 +1,6 @@
 import{Card, Button} from 'react-bootstrap'
 import logo from '../assets/logo.png'
+import MealAdd from './MealAdd/MealAdd';
 const CardAddMeal = props => {
 
     return (
@@ -8,7 +9,7 @@ const CardAddMeal = props => {
             <Card.Body style={{display:'flex', alignItems:'center',justifyContent:'space-between',flexDirection:'column',alignContent:'center'}}>
                 <Card.Title style={{color:'rgba(0,0,0,0.6)'}}>Nova Refeição</Card.Title>
                 <Card.Img variant="top" src={logo} style={{width:150,opacity:'0.4'}} />
-                <Button variant="outline-primary"><i className="bi bi-clipboard2-plus"></i>  Adicionar</Button>
+                <MealAdd apiURLuser={props.apiURLuser} setReload={props.setReload} reload={props.reload}/>
             </Card.Body>
         </Card>
         
