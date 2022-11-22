@@ -17,7 +17,7 @@ function DeleteModal(props) {
 
   return (
     <>
-      <Button  variant="danger" onClick={handleShow}>Excluir Refeição</Button>
+      <Button  variant="danger" onClick={handleShow}><i className="bi bi-trash3"></i> Excluir Refeição</Button>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
