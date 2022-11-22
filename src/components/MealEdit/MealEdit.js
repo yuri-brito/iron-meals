@@ -41,7 +41,7 @@ const MealEdit = ({id, apiURLuser,setReload,reload}) => {
           // const tempo = (ms)=>{return new Promise(resolve =>setTimeout(resolve,ms))}
           // await tempo(5000)
           setMeal(response.data)
-           console.log(response.data, '<-response data')
+
         } catch (error) {
           console.log(error)
           toast.error('Algo deu errado. Tente novamente!')   
@@ -58,8 +58,8 @@ const MealEdit = ({id, apiURLuser,setReload,reload}) => {
         
         try {            
             const clone = { ...meal }            
-            delete clone._id
-            console.log(clone,'<-clone')
+
+            delete clone._id          
             await axios.put(`${apiURLuser}/${mealId}`, clone)
             setShow(false)
             setReload(!reload)
@@ -122,8 +122,6 @@ const MealEdit = ({id, apiURLuser,setReload,reload}) => {
             }
         }
         
-    console.log(meal)
-
 
     return (
         <div>
@@ -145,7 +143,8 @@ const MealEdit = ({id, apiURLuser,setReload,reload}) => {
                     <Container>
                         <Form onSubmit={ handleSubmit }>
                             <Row>
-                            <Col className="d-flex justify-content-start align-items-center">
+
+                              <Col className="d-flex justify-content-start align-items-center">
                                     <Form.Group className="mb-3">
                                         <Form.Label>Selecione a Refeição</Form.Label>
                                         <Form.Select value={meal.title} name="title" onChange={ handleChange }>
@@ -190,6 +189,7 @@ const MealEdit = ({id, apiURLuser,setReload,reload}) => {
                                     />
                                 </Form.Group>
                                 </Col>
+
                                 <Col className="col-2 d-flex justify-content-center align-items-end">
                                    {meal.itens.length > 1 && 
                                     <Button  
@@ -198,10 +198,9 @@ const MealEdit = ({id, apiURLuser,setReload,reload}) => {
                                         <i className="bi bi-trash3"></i>   Excluir
                                         </Button>
                                         } 
-                                </Col>
+                                  </Col>
                             </Row>                                                     
                             </div>
-
                         )
                     })}
                             <Button 
@@ -210,12 +209,11 @@ const MealEdit = ({id, apiURLuser,setReload,reload}) => {
                                 onClick={ handleAdd }
                                 ><i className="bi bi-clipboard2-plus"></i>   Adicionar item
                             </Button>
-
                         </Form>
                     </Container>
                 </Modal.Body>
                 <Modal.Footer>
-                <Container>
+                  <Container>
                         <Row>
                             <Col className="col-md-6 text-center">
                                 <Button className="col-6 " variant="success" type="submit"onClick={handleSubmit}><i className="bi bi-download"></i>   Salvar refeição</Button>
@@ -224,8 +222,7 @@ const MealEdit = ({id, apiURLuser,setReload,reload}) => {
                                 <Button variant="secondary" onClick={ handleClose }><i className="bi bi-x-square"></i>   Cancelar</Button>                
                             </Col>
                         </Row>
-                    </Container>
-                                   
+                    </Container>  
                 </Modal.Footer>
             </Modal>
 

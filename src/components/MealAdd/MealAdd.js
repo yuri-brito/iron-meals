@@ -5,8 +5,10 @@ import Select from 'react-select';
 import itens from "../../foods-db.json"
 import { useNavigate } from "react-router-dom";
 import toast from 'react-hot-toast'
+
 const MealAdd = (props) => {
     const navigate=useNavigate()
+
     const [meal, setMeal] = useState({
         title: "",        
         itens: [
@@ -61,8 +63,6 @@ const MealAdd = (props) => {
             toast.error('Algo deu errado. Tente novamente mais tarde!',{duration:4000})            
         }
     };
-    
-    
 
     const handleAdd = () => {            
             const tempMeal = {
@@ -116,8 +116,9 @@ const MealAdd = (props) => {
                     
                     
                 }                                
-            }             
+            }
         }     
+    
     return (
         <div>
             <Button variant="outline-primary" onClick={handleShow}><i className="bi bi-clipboard2-plus"></i>  Adicionar</Button>
@@ -136,8 +137,10 @@ const MealAdd = (props) => {
                     <Container>
                         <Form onSubmit={ handleSubmit }>
                             <Row>
+
                                 <Col className="d-flex justify-content-start align-items-center">
                                     <Form.Group className="ms-3 mb-3">
+
                                         <Form.Label>Selecione a Refeição</Form.Label>
                                         <Form.Select name="title" onChange={ handleChange }>
                                             <option value="0">Selecione uma opção</option>
@@ -152,6 +155,7 @@ const MealAdd = (props) => {
                     
                     {meal.itens.map((obj, index) => {                        
                         return (
+
                             <Row key={index}>
                                 <Col className="ms-3 mt-2">
                                     <Form.Group className="mtb-3">
@@ -164,26 +168,27 @@ const MealAdd = (props) => {
                                             isClearable={true}
                                             isSearchable={true}
                                             placeholder="Selecione um item"
-                                            name="item"                             
-                                            onChange={ (e) => handleChange(e, index) }
-                                            
+                                            name="item"
+                                            onChange={ (e) => handleChange(e, index) }                                            
                                             // capturar o value
                                         />
+
                                     </Form.Group>
                                 </Col>
                                 <Col className="col-3 ms-3 mt-2">
-                                <Form.Group className="mtb-3">
-                                    <Form.Label>Quantidade</Form.Label>
-                                    <Form.Control
-                                        type="number"
-                                        placeholder="em (g) gramas"
-                                        name="quantity"
-                                        // value={form.quantity}
-                                        onChange={(e) => handleChange(e, index) }
-                                        value={obj.quantity}
-                                    />
-                                </Form.Group>
+                                  <Form.Group className="mtb-3">
+                                      <Form.Label>Quantidade</Form.Label>
+                                      <Form.Control
+                                          type="number"
+                                          placeholder="em (g) gramas"
+                                          name="quantity"
+                                          // value={form.quantity}
+                                          onChange={(e) => handleChange(e, index) }
+                                          value={obj.quantity}
+                                      />
+                                  </Form.Group>
                                 </Col>
+
                                 <Col className="col-2 d-flex justify-content-center align-items-end">
                                    {meal.itens.length > 1 && 
                                     <Button 
@@ -206,7 +211,6 @@ const MealAdd = (props) => {
                                     </Button>
                                 </Col>
                             </Row>
-
                         </Form>
                     </Container>
                 </Modal.Body>
@@ -227,6 +231,7 @@ const MealAdd = (props) => {
         </div>
     );
 };
+
 
 
 export default MealAdd;
