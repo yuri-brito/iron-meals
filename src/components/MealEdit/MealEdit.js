@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import axios from "axios"
 import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap"
 import Select from 'react-select';
-import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import itens from "../../foods-db.json"
 
@@ -10,11 +9,7 @@ import itens from "../../foods-db.json"
 const MealEdit = ({id, apiURLuser,setReload,reload}) => {
 
     const mealId = id   
-
-    //testado    
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const [cloneMeal, setCloneMeal] = useState()
     
     //avaliar subir o "Form" para o App
     const [meal, setMeal] = useState({        
@@ -33,26 +28,35 @@ const MealEdit = ({id, apiURLuser,setReload,reload}) => {
             }
         ]
     })
-
+    
     //para puxar as refeições do banco de dados    
     async function fetchingMeal(){
         try {
-          const response= await axios.get(`${apiURLuser}/${mealId}`)
-          // const tempo = (ms)=>{return new Promise(resolve =>setTimeout(resolve,ms))}
-          // await tempo(5000)
-          setMeal(response.data)
-
+            const response= await axios.get(`${apiURLuser}/${mealId}`)
+            // const tempo = (ms)=>{return new Promise(resolve =>setTimeout(resolve,ms))}
+            // await tempo(5000)
+            setMeal(response.data)
+            const cloneMeal = JSON.parse(JSON.stringify(response.data))
+            setCloneMeal(cloneMeal)
+            
         } catch (error) {
-          console.log(error)
-          toast.error('Algo deu errado. Tente novamente!')   
+            console.log(error)
+            toast.error('Algo deu errado. Tente novamente!')   
         }
-      }  
-      useEffect(()=>{
+    }  
+    useEffect(()=>{
         fetchingMeal();
-      },[mealId])
+    },[mealId])
+    
+    //testado    
+    const [show, setShow] = useState(false);
+    const handleShow = () => setShow(true);
+    const handleClose = () => {
+        setShow(false)
+        setMeal(cloneMeal)
+    };
 
 
-    //API não está configurada ainda
     const handleSubmit = async (e) => {
         e.preventDefault()
         if(meal.title===''){
@@ -137,7 +141,17 @@ const MealEdit = ({id, apiURLuser,setReload,reload}) => {
             }
         }
         
-
+    const colourStyles = {
+        control: styles => ({ ...styles, backgroundColor: 'white' }),
+        option: (styles, { data, isDisabled, isFocused, isSelected,is }) => {
+        return {
+            ...styles,
+            backgroundColor: isFocused ?'rgba(13, 110, 253, 255)':'white',
+            color: isFocused ? 'white':'black',
+            cursor: 'pointer',
+        };
+        },
+    };
     return (
         <div>
             <Button variant="primary" onClick={ handleShow }><i className="bi bi-pencil-square"></i>   Editar Refeição
@@ -179,15 +193,24 @@ const MealEdit = ({id, apiURLuser,setReload,reload}) => {
                                 <Col>
                                     <Form.Group className="mtb-3">
                                     <Form.Label>Selecione um item</Form.Label>
+                                        {obj.id===''?
                                         <Select
-                                            value={obj}
-                                            style={{textAlign: "left"}}
-                                            options={itens}                                                                                                                                    
-                                            // isClearable={true}
-                                            isSearchable={true}
-                                            name="item"                                            
+                                        placeholder='Selecione...'
+                                        options={itens}  
+                                        styles={colourStyles}
+                                        isSearchable={true}
+                                        onChange={ (e) => handleChange(e, index) }                                            
+                                        />
+                                        :
+                                        <Select
+                                            placeholder='Selecione...'
+                                            options={itens} 
+                                            value={obj} 
+                                            styles={colourStyles}
+                                            isSearchable={true} 
                                             onChange={ (e) => handleChange(e, index) }                                            
                                         />
+                                        }
                                     </Form.Group>
                                 </Col>
                                 <Col className="col-3">
