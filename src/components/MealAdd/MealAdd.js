@@ -29,13 +29,30 @@ const MealAdd = (props) => {
     //testado    
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleShow = () => {
+        setMeal({
+            title: "",        
+            itens: [
+                {
+                    id: "", 
+                    label: "", 
+                    kcal: "", 
+                    protein: "", 
+                    lipids: "", 
+                    carbs: "", 
+                    fiber: "", 
+                    sodium: "",
+                    quantity: ""
+                }
+            ]
+        })
+        setShow(true)};
     
 
     //API não está configurada ainda
     const handleSubmit = async (e) => {
         e.preventDefault()
-        if(meal.title===''){
+        if(meal.title===''||meal.title==='0'){
             toast.error('Selecione uma opção de refeição!')
             return
         }
@@ -138,7 +155,21 @@ const MealAdd = (props) => {
                 }                                
             }
         }     
-    
+        
+        
+    const colourStyles = {
+        control: styles => ({ ...styles, backgroundColor: 'white' }),
+        option: (styles, { data, isDisabled, isFocused, isSelected,is }) => {
+        return {
+            ...styles,
+            backgroundColor: isFocused ?'rgba(13, 110, 253, 255)':'white',
+            color: isFocused ? 'white':'black',
+            cursor: 'pointer',
+            fontSize:13,
+        };
+        },
+    };
+
     return (
         <div>
             <Button variant="outline-primary" onClick={handleShow}><i className="bi bi-clipboard2-plus"></i>  Adicionar</Button>
@@ -162,8 +193,8 @@ const MealAdd = (props) => {
                                     <Form.Group className="ms-3 mb-3">
 
                                         <Form.Label>Selecione a Refeição</Form.Label>
-                                        <Form.Select name="title" onChange={ handleChange }>
-                                            <option value="0">Selecione uma opção</option>
+                                        <Form.Select name="title"  onChange={ handleChange }>
+                                            <option value="0">Selecione...</option>
                                             <option value="breakfast">Café da Manhã</option>
                                             <option value="lunch">Almoço</option>
                                             <option value="snacks">Lanche</option>
@@ -182,13 +213,11 @@ const MealAdd = (props) => {
                                     <Form.Label>Selecione um item</Form.Label>
                                         <Select
                                             className="basic-single"
-                                            value={obj}
-                                            style={{textAlign: "left"}}
                                             options={itens}                           
-                                            isClearable={true}
                                             isSearchable={true}
-                                            placeholder="Selecione um item"
-                                            name="item"
+                                            placeholder="Selecione..."
+                                            styles={colourStyles}
+                                            // name="item"
                                             onChange={ (e) => handleChange(e, index) }                                            
                                             // capturar o value
                                         />
