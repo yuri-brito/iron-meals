@@ -16,21 +16,25 @@ const CardDetail = props => {
         toast.success('Refeição excluída com sucesso!',{duration:5000}) 
     }
     
+    function oneDecimal(num) {
+        return Math.round(num * 10) / 10
+    }
+    
     function sumReducer(sum, val) {
-        return sum + val;
+        return  Math.round((sum + val) * 10)/10
     }
 
-    function calcPortions(entry, qty) {
-        return Math.round(((entry / 100) * qty)*10)/10
+    function calcPortions(entry, qty) {        
+        return ((entry / 100) * qty)
     }
     
     const sumQuantity = refeicao.itens.map(li => li.quantity).reduce(sumReducer, 0)
-    const sumKcal = refeicao.itens.map(li => li.kcal).reduce(sumReducer, 0)
-    const sumCarbs = refeicao.itens.map(li => li.carbs).reduce(sumReducer, 0)
-    const sumProtein = refeicao.itens.map(li => li.protein).reduce(sumReducer, 0)
-    const sumLipids = refeicao.itens.map(li => li.lipids).reduce(sumReducer, 0)
-    const sumFiber = refeicao.itens.map(li => li.fiber).reduce(sumReducer, 0)
-    const sumSodium = refeicao.itens.map(li => li.sodium).reduce(sumReducer, 0)
+    const sumKcal = refeicao.itens.map(li => Math.round(calcPortions(li.kcal, li.quantity)) ).reduce(sumReducer, 0)
+    const sumCarbs = refeicao.itens.map(li => oneDecimal(calcPortions(li.carbs, li.quantity)) ).reduce(sumReducer, 0)
+    const sumProtein = refeicao.itens.map(li => oneDecimal(calcPortions(li.protein, li.quantity)) ).reduce(sumReducer, 0)
+    const sumLipids = refeicao.itens.map(li => oneDecimal(calcPortions(li.lipids, li.quantity)) ).reduce(sumReducer, 0)
+    const sumFiber = refeicao.itens.map(li => oneDecimal(calcPortions(li.fiber, li.quantity)) ).reduce(sumReducer, 0)
+    const sumSodium = refeicao.itens.map(li => Math.round(calcPortions(li.sodium, li.quantity)) ).reduce(sumReducer, 0)
     
  
     return (
@@ -70,12 +74,12 @@ const CardDetail = props => {
                         <tr key={index}>
                             <td className="align-middle">{item.label}</td>
                             <td className="align-middle">{item.quantity}g</td>
-                            <td className="align-middle">{ calcPortions(item.kcal, item.quantity) }</td>
-                            <td className="align-middle">{ calcPortions(item.carbs, item.quantity)}g</td>
-                            <td className="align-middle">{ calcPortions(item.protein, item.quantity) }g</td>
-                            <td className="align-middle">{ calcPortions(item.lipids, item.quantity) }g</td>
-                            <td className="align-middle">{ calcPortions(item.fiber, item.quantity) }g</td>
-                            <td className="align-middle">{ calcPortions(item.sodium, item.quantity) }mg</td>                          
+                            <td className="align-middle">{ Math.round(calcPortions(item.kcal, item.quantity)) }</td>
+                            <td className="align-middle">{ oneDecimal(calcPortions(item.carbs, item.quantity)) }g</td>
+                            <td className="align-middle">{ oneDecimal(calcPortions(item.protein, item.quantity)) }g</td>
+                            <td className="align-middle">{ oneDecimal(calcPortions(item.lipids, item.quantity)) }g</td>
+                            <td className="align-middle">{ oneDecimal(calcPortions(item.fiber, item.quantity)) }g</td>
+                            <td className="align-middle">{ Math.round(calcPortions(item.sodium, item.quantity)) }mg</td>                          
                         </tr>
                     )
                     })}
@@ -139,7 +143,7 @@ const CardDetail = props => {
                     </Link>
                     </Col>
                     <Col>
-                        <DeleteModal deleteRefeicao={deleteRefeicao}/>
+                        <DeleteModal deleteRefeicao={ deleteRefeicao }/>
                     </Col>
                 </Row>
             </Card.Footer>
