@@ -47,7 +47,7 @@ const ResumeCard = (props) => {
       },
       {
         soma: somaProtein,
-        name: "Protínas",
+        name: "Proteínas",
         un: "g",
         tip: "Referência OMS: 0,8 gramas por kg de peso corporal/dia",
       },
